@@ -1,0 +1,32 @@
+version: '2'
+
+services:
+  https-portal:
+    image: steveltn/https-portal
+    ports:
+      - 80:80
+      - 443:443
+    restart: always
+    environment:
+      DOMAINS: '${HOST} -> http://router:80'
+      STAGE: local
+
+  router:
+    build:
+      context: ./router/
+      dockerfile: router.Dockerfile
+
+  back:
+    build:
+      context: ./back
+      dockerfile: back.Dockerfile
+    volumes:
+      - ./back/${BACK_PROJECT_NAME}:/back
+
+  front:
+    build:
+      context: ./front
+      dockerfile: front-${DEB}.Dockerfile
+    volumes:
+      - ./front/${FRONT_PROJECT_NAME}:/front
+      - ./front/${FRONT_PROJECT_NAME}/dist:/usr/local/apache2/dist
