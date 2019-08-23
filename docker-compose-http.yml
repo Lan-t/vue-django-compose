@@ -1,0 +1,25 @@
+version: '2'
+
+services:
+
+  router:
+    build:
+      context: ./router/
+      dockerfile: router.Dockerfile
+    ports:
+      - 80:80
+
+  back:
+    build:
+      context: ./back
+      dockerfile: back.Dockerfile
+    volumes:
+      - ./back/${BACK_PROJECT_NAME}:/back
+
+  front:
+    build:
+      context: ./front
+      dockerfile: front-${DEB}.Dockerfile
+    volumes:
+      - ./front/${FRONT_PROJECT_NAME}:/front
+      - ./front/${FRONT_PROJECT_NAME}/dist:/usr/local/apache2/dist
